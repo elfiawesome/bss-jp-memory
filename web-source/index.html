@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset Command Center</title>
+    <title>Broke Sleep Schedule Japan Trip</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -231,7 +231,7 @@
 
     <header>
         <div class="brand">
-            <h1>AssetIndex</h1>
+            <h1>Japan Trip</h1>
             <span id="stats">Loading...</span>
         </div>
         
@@ -278,6 +278,7 @@
     <script src="https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js"></script>
 
     <script>
+        const rootPath = "https://raw.githubusercontent.com/Elfiawesome/bss-jp-memory/refs/heads/main/web-source/"
         // --- State ---
         let rawData = [];
         let filteredData = [];
@@ -372,13 +373,15 @@
         // --- Initialization ---
         async function init() {
             try {
-                const response = await fetch('index.json');
+                const response = await fetch(rootPath + 'index.json');
                 const json = await response.json();
                 
                 rawData = Object.entries(json.asset).map(([key, item]) => {
                     const lat = (item.gps && item.gps.lat) ? dmsToDD(item.gps.lat) : null;
                     const lon = (item.gps && item.gps.lon) ? dmsToDD(item.gps.lon) : null;
-                    const { origPath, thumbPath } = getPaths(key);
+                    var { origPath, thumbPath } = getPaths(key);
+                    origPath = rootPath + origPath;
+                    thumbPath = rootPath + thumbPath;
 
                     return {
                         id: key,
@@ -557,9 +560,12 @@
         // --- Map Logic ---
         function initMap() {
             map = L.map('map-view').setView([0, 0], 2);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap', subdomains: 'abcd', maxZoom: 19
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             }).addTo(map);
+            //L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            //    attribution: '&copy; OpenStreetMap', subdomains: 'abcd', maxZoom: 19
+            //}).addTo(map);
             markersLayer.addTo(map);
         }
 
